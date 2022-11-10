@@ -17,6 +17,9 @@ enum FileType {
 
 static FileType GetFileType(const std::string& filePath) {
     std::ifstream input (filePath, std::ios::binary);
+    if (!input.is_open()) {
+        return unknown;
+    }
     input.seekg(0, std::ios::beg);
     unsigned char magic[4] = {0};
     input.read((char*)magic, sizeof(magic));
@@ -29,6 +32,7 @@ static FileType GetFileType(const std::string& filePath) {
     }
 }
 static std::unique_ptr<Compress> MakeCompress(const std::string& filePath) {
+    std::cout << filePath << std::endl;
     auto type = GetFileType(filePath);
     switch (type) {
     case zip:

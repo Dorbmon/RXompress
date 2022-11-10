@@ -10,5 +10,6 @@ ResourceHandler::ResourceHandler() {
     this->assetPath = add(this->currentPath, "asset");
     this->folderIcon = Gdk::Pixbuf::create_from_file(add(this->assetPath, "folder.png").string());
     this->designPath = add(this->currentPath, "design");
-    this->mainWindow = add(this->designPath, "mainWin.glade");
+    this->mainWindow = add(this->designPath, "rxompress.ui");
+    this->bar = add(this->designPath, "Bar.ui");
 }

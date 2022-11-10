@@ -26,17 +26,17 @@ private:
     FileListModelColumns fileListModel;
     Glib::RefPtr<Gtk::ListStore> refFileListModel;
     std::shared_ptr<ResourceHandler> resourceHandler;
-    Gtk::Box barContentBox;
-    Bar bar;
+    Gtk::Box* barContentBox;
+    Bar::Bar* bar;
 public:
     // std::string inputFile,  std::shared_ptr<ResourceHandler> resourceHandler
     RxMainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
     void Init(std::string inputFile,  std::shared_ptr<ResourceHandler> resourceHandler);
     void refresh();
-    Gtk::ScrolledWindow fileListWin;
-    Gtk::TreeView fileList;
-    Gtk::ScrolledWindow dirWin;
+    Gtk::ScrolledWindow* fileListWin;
+    Gtk::TreeView* fileList;
+    Gtk::ScrolledWindow* dirWin;
     Gtk::ListBox dirList;
-    Gtk::Box contentBox;
+    Gtk::Box* contentBox;
 };
 

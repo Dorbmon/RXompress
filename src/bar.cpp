@@ -1,14 +1,14 @@
 #include "bar.h"
+#include "gtkmm/menubutton.h"
 #include "sigc++/functors/mem_fun.h"
 #include <iostream>
-
-Bar::Bar() {
-    about.set_label("About");
-    about.set_can_focus(true);
-    about.signal_show().connect(sigc::mem_fun(*this, &Bar::aboutClick));
-    //append(about);
-    add_child(about, "1");
+namespace Bar {
+Bar::Bar(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder) : Gtk::Box(cobject) {
+    about = builder->get_widget<Gtk::MenuButton>("AboutButton");
+    about->signal_show().connect(sigc::mem_fun(*this, &Bar::aboutClick));
+    std::cout << "build bar" << std::endl;
 }
 void Bar::aboutClick() {
     std::cout << "click" << std::endl;
+}
 }
