@@ -10,4 +10,3 @@ public:
     Zip(const std::string& fileName);
     ~Zip();
 };
-

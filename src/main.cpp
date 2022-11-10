@@ -1,6 +1,9 @@
 #include <gtkmm.h>
 #include <iostream>
-#include "argparse/argparse.hpp"
+#include <memory>
+#include "gtkmm/builder.h"
+#include "resourceHandler.h"
+#include "thirdparty/argparse/argparse.hpp"
 #include "window.h"
 
 int main(int argc, char* argv[])
@@ -17,8 +20,10 @@ int main(int argc, char* argv[])
     std::cerr << program;
     std::exit(1);
   }
- 
+  auto resourceHandler = std::make_shared<ResourceHandler>();
   auto app = Gtk::Application::create("rx.compress");
-
-  return app->make_window_and_run<RxMainWindow>(argc, argv, inputFile);
+  auto builder = Gtk::Builder::create_from_file(resourceHandler->mainWindow.string());
+  auto win = builder->get_widget_derived<RxMainWindow>(builder, "RXompress");
+  app->add_window(*win);
+  return app->run(argc, argv);
 }
