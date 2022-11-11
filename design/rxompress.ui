@@ -22,6 +22,9 @@
                 <property name="label">About</property>
               </object>
             </child>
+            <child>
+              <object class="GtkTreeView"/>
+            </child>
           </object>
         </child>
         <child>
@@ -29,28 +32,22 @@
             <property name="hexpand">True</property>
             <property name="vexpand">True</property>
             <child>
-              <object class="GtkScrolledWindow" id="DirListWin">
-                <property name="child">
-                  <object class="GtkTreeView" id="DirList">
-                    <property name="hexpand">True</property>
-                  </object>
-                </property>
-                <property name="vexpand">True</property>
-                <child>
-                  <object class="GtkTreeView"/>
-                </child>
-              </object>
-            </child>
-            <child>
-              <object class="GtkScrolledWindow" id="FileListWin">
-                <property name="child">
-                  <object class="GtkTreeView" id="FileList">
-                    <property name="hexpand">True</property>
-                    <property name="vexpand">True</property>
-                  </object>
-                </property>
+              <object class="GtkPaned">
                 <property name="hexpand">True</property>
-                <property name="vexpand">True</property>
+                <child>
+                  <object class="GtkScrolledWindow" id="DirListWin">
+                    <property name="child">
+                      <object class="GtkTreeView" id="DirList"/>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow" id="FileListWin">
+                    <property name="child">
+                      <object class="GtkTreeView" id="FileList"/>
+                    </property>
+                  </object>
+                </child>
               </object>
             </child>
           </object>

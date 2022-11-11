@@ -45,9 +45,9 @@ public:
 };
 class FileTree {
 private:
-    std::shared_ptr<FileTreeNode> root;
     std::shared_ptr<FileTreeNode> currentNode;
 public:
+    std::shared_ptr<FileTreeNode> root;
     FileTree();
     std::string InsertFile(std::string& fullEntryName, std::shared_ptr<FileItem> fileInfo);
     std::vector<std::shared_ptr<FileTreeNode>> GetCurrentDirFiles();

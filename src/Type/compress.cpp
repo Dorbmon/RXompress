@@ -11,6 +11,7 @@ std::vector<std::shared_ptr<FileTreeNode>> Compress::GetFiles() {
 }
 FileTree::FileTree() {
     this->root = std::make_shared<FileTreeNode>(std::make_shared<FileItem>("/", true, 0), nullptr);
+    this->root->self->isDir = true;
     this->currentNode = this->root;
 }
 
