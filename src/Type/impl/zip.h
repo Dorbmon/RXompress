@@ -1,9 +1,10 @@
 #pragma once
 #include "../compress.h"
 #include <string>
+#include <zip.h>
 class Zip: public Compress {
 private:
-    struct zip_t* zip;
+    zip_t* zip;
     std::string currentPath;
     void reloadFiles();
 public:
