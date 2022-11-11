@@ -13,7 +13,8 @@ void startWin() {
   auto win = builder->get_widget_derived<RxMainWindow>(builder, "RXompress");
   win->Init(inputFile, resourceHandler);
   app->add_window(*win);
-  win->show();
+  win->present();
+  //win->show();
 }
 int main(int argc, char* argv[])
 {
@@ -29,7 +30,7 @@ int main(int argc, char* argv[])
     std::cerr << program;
     std::exit(1);
   }
-  app = Gtk::Application::create("rx.compress");
-  app->signal_startup().connect(&startWin);
+  app = Gtk::Application::create("rx.compress", Gio::Application::Flags::HANDLES_OPEN);
+  app->signal_activate().connect(&startWin);
   return app->run(argc, argv);
 }

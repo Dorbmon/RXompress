@@ -5,17 +5,23 @@
   <requires lib="gtk" version="4.6"/>
   <object class="GtkWindow" id="RXompress">
     <property name="height-request">5</property>
-    <property name="sensitive">False</property>
     <child>
-      <object class="GtkBox">
+      <object class="GtkBox" id="WholeContent">
         <property name="hexpand">True</property>
         <property name="opacity">0.4</property>
         <property name="orientation">vertical</property>
         <property name="vexpand">True</property>
         <child>
           <object class="GtkBox" id="BarBox">
+            <property name="baseline-position">bottom</property>
             <property name="hexpand">True</property>
             <property name="overflow">hidden</property>
+            <property name="spacing">4</property>
+            <child>
+              <object class="GtkButton" id="AboutButton">
+                <property name="label">About</property>
+              </object>
+            </child>
           </object>
         </child>
         <child>

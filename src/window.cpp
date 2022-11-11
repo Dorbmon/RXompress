@@ -1,10 +1,11 @@
 #include "window.h"
 #include "Type/filetype.h"
-#include "bar.h"
+#include "aboutWin.h"
 #include "gdkmm/pixbuf.h"
 #include "gtkmm/box.h"
 #include "gtkmm/cellrendererpixbuf.h"
 #include "gtkmm/enums.h"
+#include "gtkmm/label.h"
 #include "resourceHandler.h"
 #include <cassert>
 #include <fmt/core.h>
@@ -16,6 +17,9 @@ RxMainWindow::RxMainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Buil
     this->contentBox = builder->get_widget<Gtk::Box>("ContentBox");
     this->set_default_size(800, 500);
     this->barContentBox = builder->get_widget<Gtk::Box>("BarBox");
+    //auto tmp = Gtk::Button();
+    //tmp.set_label("Hello");
+    //this->barContentBox->append(tmp);
     this->fileList = builder->get_widget<Gtk::TreeView>("FileList");
     this->refFileListModel = Gtk::ListStore::create(this->fileListModel);
     this->fileList->set_model(refFileListModel);
@@ -27,12 +31,14 @@ RxMainWindow::RxMainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Buil
     }
     this->fileList->append_column("Name", this->fileListModel.fileName);
     this->fileList->append_column("Size", this->fileListModel.fileSize);
-    //this->fileList->set_expand(true);
+    aboutButton = builder->get_widget<Gtk::Button>("AboutButton");
+    aboutButton->signal_clicked().connect([]() {
+        AboutWin::show();
+    });
 }
 void RxMainWindow::Init(std::string inputFile, std::shared_ptr<ResourceHandler> resourceHandler) {
     this->resourceHandler = resourceHandler;
-    this->bar = Bar::createBar(resourceHandler.get());
-    this->barContentBox->append(*this->bar);
+    std::cout << "num:" << this->barContentBox->get_first_child()->get_name() << std::endl;
     this->set_title(fmt::format("{}-RX Compress", inputFile));
     this->compress = FileType::MakeCompress(inputFile);
     assert(this->compress != nullptr);
@@ -50,7 +56,6 @@ void RxMainWindow::refresh() {
         auto item = *(this->refFileListModel->append());
         item[this->fileListModel.fileName] = file->self->fileName;
         item[this->fileListModel.fileSize] = file->self->size;
-        
         item[this->fileListModel.icon] = this->resourceHandler->folderIcon;
     }
     for(guint i = 0; i < 2; i++) {

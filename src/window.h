@@ -1,11 +1,11 @@
 #include "Type/compress.h"
 #include "gtkmm/box.h"
 #include "gtkmm/listbox.h"
+#include "gtkmm/menubutton.h"
 #include "gtkmm/treeview.h"
 #include "resourceHandler.h"
 #include <gtkmm.h>
 #include <memory>
-#include "bar.h"
 class FileListModelColumns : public Gtk::TreeModel::ColumnRecord {
 public:
     FileListModelColumns() {
@@ -27,7 +27,6 @@ private:
     Glib::RefPtr<Gtk::ListStore> refFileListModel;
     std::shared_ptr<ResourceHandler> resourceHandler;
     Gtk::Box* barContentBox;
-    Bar::Bar* bar;
 public:
     // std::string inputFile,  std::shared_ptr<ResourceHandler> resourceHandler
     RxMainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
@@ -38,5 +37,6 @@ public:
     Gtk::ScrolledWindow* dirWin;
     Gtk::ListBox dirList;
     Gtk::Box* contentBox;
+    Gtk::Button* aboutButton;
 };
 
