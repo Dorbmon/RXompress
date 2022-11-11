@@ -29,6 +29,7 @@ std::string FileTree::InsertFile(std::string& fullEntryName, std::shared_ptr<Fil
         currentNode = currentNode->map [*ptr];
     }
     currentNode->self = fileInfo;
+    fileInfo->fileName = res.back();
     return res.back();
 }
 std::vector<std::shared_ptr<FileTreeNode>> FileTree::GetCurrentDirFiles() {

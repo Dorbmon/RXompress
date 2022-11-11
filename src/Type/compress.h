@@ -44,9 +44,8 @@ public:
     FileTreeNode(std::shared_ptr<FileItem> self, std::shared_ptr<FileTreeNode> pre) : self(self), pre(pre) {}
 };
 class FileTree {
-private:
-    std::shared_ptr<FileTreeNode> currentNode;
 public:
+    std::shared_ptr<FileTreeNode> currentNode;
     std::shared_ptr<FileTreeNode> root;
     FileTree();
     std::string InsertFile(std::string& fullEntryName, std::shared_ptr<FileItem> fileInfo);

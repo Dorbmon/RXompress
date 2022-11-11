@@ -55,7 +55,11 @@ RxMainWindow::RxMainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Buil
     }
 }
 void RxMainWindow::activateDirItem(const Gtk::TreePath & path, Gtk::TreeViewColumn * column) {
-
+    auto iter = this->refDirListModel->get_iter(path);
+    if (iter) {
+        this->compress->fileTree->currentNode = (*iter)[this->dirListModel.node];
+        this->refreshFileList();
+    }
 }
 void RxMainWindow::refreshDirList(std::shared_ptr<FileTreeNode> currentNode, Gtk::TreeRow* father) {
     if (currentNode == nullptr) {
@@ -72,6 +76,7 @@ void RxMainWindow::refreshDirList(std::shared_ptr<FileTreeNode> currentNode, Gtk
             row = *(this->refDirListModel->append());
         }
         row [this->dirListModel.dirName] = currentNode->self->fileName;
+        row [this->dirListModel.node] = currentNode;
         for (auto child: currentNode->map) {
             if (child.second->self->isDir) {
                 refreshDirList(child.second, &row);
@@ -87,13 +92,14 @@ void RxMainWindow::Init(std::string inputFile, std::shared_ptr<ResourceHandler> 
     assert(this->compress != nullptr);
     this->refresh();
 }
-void RxMainWindow::refreshFileList() {
-    this->refFileListModel->clear();
-}
 void RxMainWindow::refresh() {
     this->refreshFileList();
     this->refreshDirList(nullptr, nullptr);
+    this->refreshFileList();
     // read files of current dir
+}
+void RxMainWindow::refreshFileList() {
+    this->refFileListModel->clear();
     auto files = this->compress->GetFiles();
     for (auto file: files) {
         //std::cout << file->self->fileName << std::endl;

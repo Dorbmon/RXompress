@@ -23,13 +23,14 @@ class DirListModelColumns : public Gtk::TreeModel::ColumnRecord {
 public:
     DirListModelColumns() {
         add(dirName);
+        add(node);
     }
     Gtk::TreeModelColumn<Glib::ustring> dirName;
+    Gtk::TreeModelColumn<std::shared_ptr<FileTreeNode>> node;
 };
 class RxMainWindow : public Gtk::Window {
 private:
     std::unique_ptr<Compress> compress;
-    void refreshFileList();
     FileListModelColumns fileListModel;
     Glib::RefPtr<Gtk::TreeStore> refFileListModel;
     DirListModelColumns dirListModel;
@@ -42,6 +43,7 @@ public:
     RxMainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
     void Init(std::string inputFile,  std::shared_ptr<ResourceHandler> resourceHandler);
     void refresh();
+    void refreshFileList();
     Gtk::ScrolledWindow* fileListWin;
     Gtk::TreeView* fileList;
     Gtk::ScrolledWindow* dirWin;
