@@ -1,4 +1,5 @@
 #pragma once
+#include "gtkmm/treemodel.h"
 #include <string>
 #include <memory>
 #include <vector>
@@ -8,7 +9,8 @@ public:
     std::string fileName;
     bool isDir;
     unsigned long long size;
-    FileItem(std::string_view fileName, bool isDir, unsigned long long size): fileName(fileName), isDir(isDir), size(size) {}
+    void* metaData;
+    FileItem(std::string_view fileName, bool isDir, unsigned long long size, void* metaData): fileName(fileName), isDir(isDir), size(size), metaData(metaData) {}
 };
 
 static std::vector<std::string> split(std::string_view s, std::string_view c) {
@@ -33,6 +35,8 @@ private:
 public:
     Compress();
     virtual std::vector<std::shared_ptr<class FileTreeNode>> GetFiles();    // 获取当前目录下所有的文件
+    virtual bool ChangeName(void* meta, std::string& newName)=0;
+    virtual std::pair<bool, std::string> Save() = 0;
     std::unique_ptr<class FileTree> fileTree;
 };
 
@@ -41,6 +45,8 @@ public:
     std::weak_ptr<FileTreeNode> pre;
     std::shared_ptr<FileItem> self;
     std::map<std::string, std::shared_ptr<FileTreeNode>> map;
+    Gtk::TreeModel::iterator dirListColumn;
+    Gtk::TreeModel::iterator fileListColumn;
     FileTreeNode(std::shared_ptr<FileItem> self, std::shared_ptr<FileTreeNode> pre) : self(self), pre(pre) {}
 };
 class FileTree {

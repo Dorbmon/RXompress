@@ -11,7 +11,7 @@ void startWin() {
   auto resourceHandler = std::make_shared<ResourceHandler>();
   auto builder = Gtk::Builder::create_from_file(resourceHandler->mainWindow.string());
   auto win = builder->get_widget_derived<RxMainWindow>(builder, "RXompress");
-  win->Init(inputFile, resourceHandler);
+  win->Init(inputFile, resourceHandler, app);
   app->add_window(*win);
   win->present();
   //win->show();

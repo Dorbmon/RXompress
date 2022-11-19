@@ -32,7 +32,6 @@ static FileType GetFileType(const std::string& filePath) {
     }
 }
 static std::unique_ptr<Compress> MakeCompress(const std::string& filePath) {
-    std::cout << filePath << std::endl;
     auto type = GetFileType(filePath);
     switch (type) {
     case zip:

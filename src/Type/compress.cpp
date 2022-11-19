@@ -10,7 +10,7 @@ std::vector<std::shared_ptr<FileTreeNode>> Compress::GetFiles() {
     return this->fileTree->GetCurrentDirFiles();
 }
 FileTree::FileTree() {
-    this->root = std::make_shared<FileTreeNode>(std::make_shared<FileItem>("/", true, 0), nullptr);
+    this->root = std::make_shared<FileTreeNode>(std::make_shared<FileItem>("/", true, 0, nullptr), nullptr);
     this->root->self->isDir = true;
     this->currentNode = this->root;
 }
@@ -20,10 +20,9 @@ std::string FileTree::InsertFile(std::string& fullEntryName, std::shared_ptr<Fil
     auto currentNode = this->root;
     for (auto ptr = res.begin();ptr != res.end(); ptr ++) {
         // 一层一层下去
-        currentNode->self->isDir = true;
         if (currentNode->map.find(*ptr) == currentNode->map.end()) {
             currentNode->map.insert({(*ptr), std::make_shared<FileTreeNode>(
-                std::make_shared<FileItem>(*ptr, true, 0),
+                std::make_shared<FileItem>(*ptr, true, 0, nullptr),
                 currentNode
             )});
         }

@@ -13,11 +13,15 @@ public:
         add(fileName);
         add(fileSize);
         add(icon);
+        add(meta);
+        add(node);
     }
 
     Gtk::TreeModelColumn<Glib::ustring> fileName;
     Gtk::TreeModelColumn<size_t> fileSize;
     Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf>> icon;
+    Gtk::TreeModelColumn<void*> meta;
+    Gtk::TreeModelColumn<std::shared_ptr<FileTreeNode>> node;
 };
 class DirListModelColumns : public Gtk::TreeModel::ColumnRecord {
 public:
@@ -36,12 +40,12 @@ private:
     DirListModelColumns dirListModel;
     Glib::RefPtr<Gtk::TreeStore> refDirListModel;
     std::shared_ptr<ResourceHandler> resourceHandler;
-    Gtk::Box* barContentBox;
+    Gtk::Box* wholeContentBox;
     void refreshDirList(std::shared_ptr<FileTreeNode> currentNode, Gtk::TreeRow* father);
 public:
     // std::string inputFile,  std::shared_ptr<ResourceHandler> resourceHandler
     RxMainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
-    void Init(std::string inputFile,  std::shared_ptr<ResourceHandler> resourceHandler);
+    void Init(std::string inputFile,  std::shared_ptr<ResourceHandler> resourceHandler, Glib::RefPtr<Gtk::Application> app);
     void refresh();
     void refreshFileList();
     Gtk::ScrolledWindow* fileListWin;
@@ -49,7 +53,8 @@ public:
     Gtk::ScrolledWindow* dirWin;
     Gtk::TreeView* dirList;
     Gtk::Box* contentBox;
-    Gtk::Button* aboutButton;
     void activateDirItem(const Gtk::TreePath &, Gtk::TreeViewColumn *);
+    void onEditFileName(const Glib::ustring &, const Glib::ustring &);
+    void saveFile();
 };
 
