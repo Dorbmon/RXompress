@@ -37,6 +37,7 @@ public:
     virtual std::vector<std::shared_ptr<class FileTreeNode>> GetFiles();    // 获取当前目录下所有的文件
     virtual bool ChangeName(void* meta, std::string& newName)=0;
     virtual std::pair<bool, std::string> Save() = 0;
+    virtual std::pair<bool, std::string> Remove(void* meta) = 0;
     std::unique_ptr<class FileTree> fileTree;
 };
 

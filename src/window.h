@@ -48,6 +48,7 @@ public:
     void Init(std::string inputFile,  std::shared_ptr<ResourceHandler> resourceHandler, Glib::RefPtr<Gtk::Application> app);
     void refresh();
     void refreshFileList();
+    void initFileList();
     Gtk::ScrolledWindow* fileListWin;
     Gtk::TreeView* fileList;
     Gtk::ScrolledWindow* dirWin;
@@ -56,5 +57,9 @@ public:
     void activateDirItem(const Gtk::TreePath &, Gtk::TreeViewColumn *);
     void onEditFileName(const Glib::ustring &, const Glib::ustring &);
     void saveFile();
+private:
+    Gtk::PopoverMenu fileListMenuPopup;
+    void fileListRename();
+    void fileListRemove();
 };
 

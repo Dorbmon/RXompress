@@ -79,3 +79,14 @@ std::pair<bool, std::string> Zip::Save() {
     }
     return std::make_pair(true, "");
 }
+std::pair<bool, std::string> Zip::Remove(void* meta) {
+    auto index = (zip_uint64_t)meta;
+    auto ret = zip_delete(this->zip, index);
+    if (ret == ZIP_ER_INVAL) {
+        return std::make_pair(false, "Unknown file");
+    }
+    if (ret == 0) {
+        return std::make_pair(true, "");
+    }
+    return std::make_pair(false, "Unknown Error");
+}

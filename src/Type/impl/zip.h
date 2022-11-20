@@ -12,5 +12,6 @@ public:
     Zip(const std::string& fileName);
     virtual bool ChangeName(void* meta, std::string& newName) override;
     virtual std::pair<bool, std::string> Save() override;
+    virtual std::pair<bool, std::string> Remove(void* meta) override;
     ~Zip();
 };

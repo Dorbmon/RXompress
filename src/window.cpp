@@ -43,7 +43,6 @@ RxMainWindow::RxMainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Buil
     this->dirList->set_model(this->refDirListModel);
     this->dirList->append_column("Name", this->dirListModel.dirName);
     this->dirList->signal_row_activated().connect(sigc::mem_fun(*this, &RxMainWindow::activateDirItem));
-
     for(guint i = 0; i < this->fileList->get_n_columns(); i++) {
         Gtk::TreeView::Column* pColumn = this->fileList->get_column(i);
         assert(pColumn != nullptr);
@@ -54,6 +53,7 @@ RxMainWindow::RxMainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Buil
         assert(pColumn != nullptr);
         pColumn->set_resizable(true);
     }
+    this->initFileList();
 }
 void RxMainWindow::activateDirItem(const Gtk::TreePath & path, Gtk::TreeViewColumn * column) {
     auto iter = this->refDirListModel->get_iter(path);
@@ -137,7 +137,7 @@ void RxMainWindow::Init(std::string inputFile, std::shared_ptr<ResourceHandler> 
 
     actionGroup->add_action("about", [] {
         AboutWin::show();
-    });
+    }); 
     actionGroup->add_action("save", sigc::mem_fun(*this, &RxMainWindow::saveFile));
     insert_action_group("app", actionGroup);
     //m_Box.append(*pMenuBar);
@@ -149,23 +149,7 @@ void RxMainWindow::refresh() {
     this->refreshFileList();
     // read files of current dir
 }
-void RxMainWindow::refreshFileList() {
-    this->refFileListModel->clear();
-    auto files = this->compress->GetFiles();
-    for (auto file: files) {
-        //std::cout << file->self->fileName << std::endl;
-        auto iter = this->refFileListModel->append();
-        auto item = *(iter);
-        item[this->fileListModel.fileName] = file->self->fileName;
-        item[this->fileListModel.fileSize] = file->self->size;
-        if (file->self->isDir) {
-            item[this->fileListModel.icon] = this->resourceHandler->folderIcon;
-        }
-        file->fileListColumn = iter;
-        item[this->fileListModel.meta] = file->self->metaData;
-        item[this->fileListModel.node] = file;
-    }
-}
+
 void RxMainWindow::onEditFileName(const Glib::ustring & path, const Glib::ustring & value) {
     auto iter = this->refFileListModel->get_iter(path);
     if (iter) {
