@@ -13,31 +13,17 @@ public:
     FileItem(std::string_view fileName, bool isDir, unsigned long long size, void* metaData): fileName(fileName), isDir(isDir), size(size), metaData(metaData) {}
 };
 
-static std::vector<std::string> split(std::string_view s, std::string_view c) {
-    std::vector<std::string> v;
-	std::string::size_type pos1, pos2;
-	size_t len = s.length();
-	pos2 = s.find(c);
-	pos1 = 0;
-	while (std::string::npos != pos2) {
-		v.emplace_back(s.substr(pos1, pos2 - pos1));
- 
-		pos1 = pos2 + c.size();
-		pos2 = s.find(c, pos1);
-	}
-	if (pos1 != len)
-		v.emplace_back(s.substr(pos1));
-    return v;
-}
+std::vector<std::string> split(std::string_view s, std::string_view c);
 class Compress {
 private:
     
 public:
     Compress();
     virtual std::vector<std::shared_ptr<class FileTreeNode>> GetFiles();    // 获取当前目录下所有的文件
-    virtual bool ChangeName(void* meta, std::string& newName)=0;
+    virtual bool ChangeName(void* meta, std::string_view newName)=0;
     virtual std::pair<bool, std::string> Save() = 0;
     virtual std::pair<bool, std::string> Remove(void* meta) = 0;
+    virtual std::pair<bool, std::string> AddFile(void* dirMeta, std::string_view filePath) = 0;
     std::unique_ptr<class FileTree> fileTree;
 };
 
@@ -48,14 +34,14 @@ public:
     std::map<std::string, std::shared_ptr<FileTreeNode>> map;
     Gtk::TreeModel::iterator dirListColumn;
     Gtk::TreeModel::iterator fileListColumn;
-    FileTreeNode(std::shared_ptr<FileItem> self, std::shared_ptr<FileTreeNode> pre) : self(self), pre(pre) {}
+    FileTreeNode(std::shared_ptr<FileItem> self, std::shared_ptr<FileTreeNode> pre) :  pre(pre), self(self) {}
 };
 class FileTree {
 public:
     std::shared_ptr<FileTreeNode> currentNode;
     std::shared_ptr<FileTreeNode> root;
     FileTree();
-    std::string InsertFile(std::string& fullEntryName, std::shared_ptr<FileItem> fileInfo);
+    std::string InsertFile(std::string_view fullEntryName, std::shared_ptr<FileItem> fileInfo);
     std::vector<std::shared_ptr<FileTreeNode>> GetCurrentDirFiles();
 };
 /*

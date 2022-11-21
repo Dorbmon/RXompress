@@ -1,5 +1,6 @@
 #include "zip.h"
 #include "glibmm/ustring.h"
+#include <boost/filesystem/path.hpp>
 #include <fmt/format.h>
 #include <iostream>
 #include <utility>
@@ -11,7 +12,7 @@ void Zip::reloadFiles() {
     for (zip_int64_t i = 0; i < n; ++i) {
         //zip_entry_openbyindex(this->zip, i);
         //zip_open();
-        auto file = zip_fopen_index(this->zip, i, 0);
+        //auto file = zip_fopen_index(this->zip, i, 0);
         auto name = std::string(zip_get_name(this->zip, i, 0));
         //int isdir = zip_entry_isdir(zip);
         //unsigned long long size = zip_entry_size(zip);
@@ -40,7 +41,7 @@ Zip::Zip(const std::string& fileName) : fileName(fileName) {
 Zip::~Zip() {
     zip_close(this->zip);
 }
-bool Zip::ChangeName(void *meta, std::string &newName) {
+bool Zip::ChangeName(void *meta, std::string_view newName) {
     auto index = (zip_uint64_t)meta;
     auto name = std::string(zip_get_name(this->zip, index, 0));
     size_t end = 0;
@@ -89,4 +90,22 @@ std::pair<bool, std::string> Zip::Remove(void* meta) {
         return std::make_pair(true, "");
     }
     return std::make_pair(false, "Unknown Error");
+}
+std::pair<bool, std::string> Zip::AddFile(void* dirMeta, std::string_view filePath) {
+    auto index = (zip_uint64_t)dirMeta;
+    std::string_view name = zip_get_name(this->zip, index, 0);
+    if (!name.ends_with("/")) { // not a folder 
+        return std::make_pair(false, "not a folder");
+    }
+    //std::string newFile = name + 
+    auto strFilePath = std::string(filePath);
+    auto fpath = boost::filesystem::path();
+    //std::cout << "fname:" << fpath.filename() << std::endl;
+    std::string newPath = fmt::format("{}{}", name, fpath.filename().string());
+    auto source = zip_source_file(this->zip, strFilePath.c_str(), 0, -1);
+    if (source == NULL) {
+        return std::make_pair(false, "Failed to open source file");
+    }
+    zip_add(this->zip, newPath.c_str(), source);
+    return std::make_pair(true, "");
 }

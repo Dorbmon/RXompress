@@ -61,5 +61,7 @@ private:
     Gtk::PopoverMenu fileListMenuPopup;
     void fileListRename();
     void fileListRemove();
+    bool fileListOnDropFile(const Glib::ValueBase &, double, double);
+    std::pair<bool, std::string>  fileListInsertFileOrDir(const std::string& path);
 };
 

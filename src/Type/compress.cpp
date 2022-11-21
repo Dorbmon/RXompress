@@ -15,7 +15,7 @@ FileTree::FileTree() {
     this->currentNode = this->root;
 }
 
-std::string FileTree::InsertFile(std::string& fullEntryName, std::shared_ptr<FileItem> fileInfo) {
+std::string FileTree::InsertFile(std::string_view fullEntryName, std::shared_ptr<FileItem> fileInfo) {
     std::vector<std::string> res = split(fullEntryName, "/");
     auto currentNode = this->root;
     for (auto ptr = res.begin();ptr != res.end(); ptr ++) {
@@ -38,4 +38,20 @@ std::vector<std::shared_ptr<FileTreeNode>> FileTree::GetCurrentDirFiles() {
         ret.push_back(ptr->second);
     }
     return ret;
+}
+std::vector<std::string> split(std::string_view s, std::string_view c) {
+    std::vector<std::string> v;
+	std::string::size_type pos1, pos2;
+	size_t len = s.length();
+	pos2 = s.find(c);
+	pos1 = 0;
+	while (std::string::npos != pos2) {
+		v.emplace_back(s.substr(pos1, pos2 - pos1));
+ 
+		pos1 = pos2 + c.size();
+		pos2 = s.find(c, pos1);
+	}
+	if (pos1 != len)
+		v.emplace_back(s.substr(pos1));
+    return v;
 }

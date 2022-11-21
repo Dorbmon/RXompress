@@ -1,5 +1,7 @@
 #include "gtkmm/treeiter.h"
 #include "window.h"
+#include <boost/filesystem/operations.hpp>
+#include <gdk/gdkcontentformats.h>
 #include <iostream>
 void RxMainWindow::refreshFileList() {
     this->refFileListModel->clear();
@@ -45,21 +47,27 @@ void RxMainWindow::initFileList() {
     sigc::mem_fun(*this, &RxMainWindow::fileListRemove));
 
     insert_action_group("popup", refActionGroup);
+
+    // Bind File Drop Event
+    auto target = Gtk::DropTarget::create(GDK_TYPE_FILE_LIST, Gdk::DragAction::COPY);
+    target->signal_drop().connect(sigc::mem_fun(*this, &RxMainWindow::fileListOnDropFile), false);
+    this->fileList->add_controller(target);
 }
 void RxMainWindow::fileListRemove() {
     auto selection = this->fileList->get_selection();
     if (selection != nullptr) {
         auto row = *(selection->get_selected());
         if (this->compress != nullptr) {
+            std::shared_ptr<FileTreeNode> node = row[this->fileListModel.node];
             auto res = this->compress->Remove(row[this->fileListModel.meta]);
             if (!res.first) {
                 std::cerr << res.second << std::endl;
             } else {
                 //this->compress->
-                this->refFileListModel->erase(selection->get_selected());
+                this->refDirListModel->erase(node->dirListColumn);
+                this->refFileListModel->erase(node->fileListColumn);
             }
         }
-        ;
         //row->get_iter
     }
 }
@@ -76,4 +84,35 @@ void RxMainWindow::fileListRename() {
         }
         
     }
+}
+bool RxMainWindow::fileListOnDropFile(const Glib::ValueBase& value, double x, double y) {
+    if (G_VALUE_HOLDS(value.gobj(), gdk_file_list_get_type())) {
+    // We got the value type that we expected.
+        Glib::Value<GdkFileList*> file_list;
+        file_list.init(value.gobj());
+        GdkFileList* files = file_list.get();
+        auto file = gdk_file_list_get_files(files);
+        while (file) {
+            auto s = (GFile*)(file->data);
+            this->fileListInsertFileOrDir(g_file_get_path(s));
+            file = file->next;
+        }
+        //file_list.init(value.gobj());
+        //const Glib::ustring dropped_string = ustring_value.get();
+
+        //std::cout << "Received \"" << dropped_string << "\" in button " << std::endl;
+        return true;
+    }
+    return false;
+}
+std::pair<bool, std::string> RxMainWindow::fileListInsertFileOrDir(const std::string& path) {
+    auto p = boost::filesystem::path(path);
+    std::cout << "enter f" << path << std::endl;
+    if (boost::filesystem::is_regular_file(path)) { // is a regular file
+        if (this->compress != nullptr) {
+            this->compress->AddFile(this->compress->fileTree->currentNode->self->metaData, path);
+            std::cout << "finished" << std::endl;
+        }
+    }
+    return std::make_pair(true, "");
 }

@@ -7,7 +7,7 @@ file(GLOB_RECURSE csrcs src/*.c)
 file(GLOB_RECURSE ccsrcs src/*.cc)
 find_package(PkgConfig)
 find_package(fmt)
-
+add_definitions(-Wall)
 FIND_PACKAGE(Boost REQUIRED  COMPONENTS  system filesystem)
 IF (Boost_FOUND)
     message(Boost\ version: ${Boost_VERSION_STRING})
@@ -15,6 +15,7 @@ IF (Boost_FOUND)
     ADD_DEFINITIONS( "-DHAS_BOOST" )
     
 ENDIF()
+
 find_package(libzip REQUIRED)
 file(COPY asset DESTINATION .)
 file(COPY design DESTINATION .)

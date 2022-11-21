@@ -10,8 +10,9 @@ private:
     std::string fileName;
 public:
     Zip(const std::string& fileName);
-    virtual bool ChangeName(void* meta, std::string& newName) override;
+    virtual bool ChangeName(void* meta, std::string_view newName) override;
     virtual std::pair<bool, std::string> Save() override;
     virtual std::pair<bool, std::string> Remove(void* meta) override;
+    virtual std::pair<bool, std::string> AddFile(void* dirMeta, std::string_view filePath) override;
     ~Zip();
 };
