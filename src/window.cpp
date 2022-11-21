@@ -154,7 +154,7 @@ void RxMainWindow::onEditFileName(const Glib::ustring & path, const Glib::ustrin
     auto iter = this->refFileListModel->get_iter(path);
     if (iter) {
         auto column = *iter;
-        auto meta = column[this->fileListModel.meta];
+        void* meta = column[this->fileListModel.meta];
         std::string stdName = value;
         std::shared_ptr<FileTreeNode> node = column[this->fileListModel.node];
         if (this->compress->ChangeName(meta, stdName)) {

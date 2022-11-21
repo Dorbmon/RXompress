@@ -13,6 +13,6 @@ public:
     virtual bool ChangeName(void* meta, std::string_view newName) override;
     virtual std::pair<bool, std::string> Save() override;
     virtual std::pair<bool, std::string> Remove(void* meta) override;
-    virtual std::pair<bool, std::string> AddFile(void* dirMeta, std::string_view filePath) override;
+    virtual std::tuple<bool, std::string, std::shared_ptr<FileItem>> AddFile(void* dirMeta, std::string_view filePath) override;
     ~Zip();
 };

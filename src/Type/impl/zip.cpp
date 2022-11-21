@@ -1,11 +1,12 @@
 #include "zip.h"
-#include "glibmm/ustring.h"
 #include <boost/filesystem/path.hpp>
 #include <fmt/format.h>
 #include <iostream>
+#include <optional>
 #include <utility>
 #include <zip.h>
 #include <zipconf.h>
+#include <defer.h>
 void Zip::reloadFiles() {
     //auto n = (this->zip);
     auto n = zip_get_num_entries(this->zip, 0);
@@ -91,21 +92,37 @@ std::pair<bool, std::string> Zip::Remove(void* meta) {
     }
     return std::make_pair(false, "Unknown Error");
 }
-std::pair<bool, std::string> Zip::AddFile(void* dirMeta, std::string_view filePath) {
-    auto index = (zip_uint64_t)dirMeta;
-    std::string_view name = zip_get_name(this->zip, index, 0);
-    if (!name.ends_with("/")) { // not a folder 
-        return std::make_pair(false, "not a folder");
-    }
-    //std::string newFile = name + 
+std::tuple<bool, std::string, std::shared_ptr<FileItem>> Zip::AddFile(void* dirMeta, std::string_view filePath) {
     auto strFilePath = std::string(filePath);
-    auto fpath = boost::filesystem::path();
-    //std::cout << "fname:" << fpath.filename() << std::endl;
-    std::string newPath = fmt::format("{}{}", name, fpath.filename().string());
+    auto fpath = boost::filesystem::path(strFilePath);
+    std::string newPath;
+    if (dirMeta != nullptr) {
+        auto index = (zip_uint64_t)dirMeta;
+        std::string_view name = zip_get_name(this->zip, index, 0);
+        if (!name.ends_with("/")) { // not a folder 
+            return std::make_tuple(false, "Not a folder", nullptr);
+        }
+        newPath = fmt::format("{}{}", name, fpath.filename().string());
+    } else {
+        newPath = fpath.filename().string();
+    }
     auto source = zip_source_file(this->zip, strFilePath.c_str(), 0, -1);
     if (source == NULL) {
-        return std::make_pair(false, "Failed to open source file");
+        return std::make_tuple(false, "Failed to open source file", nullptr);
     }
-    zip_add(this->zip, newPath.c_str(), source);
-    return std::make_pair(true, "");
+    defer (
+        zip_source_close(source);
+    );
+    auto index = zip_add(this->zip, newPath.c_str(), source);
+    if (index == -1) {
+        std::make_tuple(false, "Failed to add file", nullptr);
+    }
+    zip_stat_t stat;
+    size_t sourceSize = 0;
+    if (zip_source_stat(source, &stat) == 0) {
+        sourceSize = stat.size;
+    }
+    auto fileInfo = std::make_shared<FileItem>(fpath.filename().string(), false, sourceSize, (void*)index);
+    Compress::fileTree->InsertFile(newPath, fileInfo);
+    return std::make_tuple(true, "", fileInfo);
 }

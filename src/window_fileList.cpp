@@ -110,8 +110,13 @@ std::pair<bool, std::string> RxMainWindow::fileListInsertFileOrDir(const std::st
     std::cout << "enter f" << path << std::endl;
     if (boost::filesystem::is_regular_file(path)) { // is a regular file
         if (this->compress != nullptr) {
-            this->compress->AddFile(this->compress->fileTree->currentNode->self->metaData, path);
-            std::cout << "finished" << std::endl;
+            auto node = this->compress->AddFile(this->compress->fileTree->currentNode->self->metaData, path);
+            if (!std::get<0>(node)) {
+                std::cerr << std::get<1>(node) << std::endl;
+            } else {
+                // Add File Successed
+                this->refreshFileList();
+            }
         }
     }
     return std::make_pair(true, "");

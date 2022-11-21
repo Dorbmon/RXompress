@@ -8,22 +8,23 @@ class FileItem {
 public:
     std::string fileName;
     bool isDir;
-    unsigned long long size;
+    size_t size;
     void* metaData;
-    FileItem(std::string_view fileName, bool isDir, unsigned long long size, void* metaData): fileName(fileName), isDir(isDir), size(size), metaData(metaData) {}
+    FileItem(std::string_view fileName, bool isDir, size_t size, void* metaData): fileName(fileName), isDir(isDir), size(size), metaData(metaData) {}
 };
 
 std::vector<std::string> split(std::string_view s, std::string_view c);
+
 class Compress {
 private:
     
 public:
     Compress();
-    virtual std::vector<std::shared_ptr<class FileTreeNode>> GetFiles();    // 获取当前目录下所有的文件
+    virtual std::vector<std::shared_ptr<class FileTreeNode>> GetFiles();    // Get All Files under current folder
     virtual bool ChangeName(void* meta, std::string_view newName)=0;
     virtual std::pair<bool, std::string> Save() = 0;
     virtual std::pair<bool, std::string> Remove(void* meta) = 0;
-    virtual std::pair<bool, std::string> AddFile(void* dirMeta, std::string_view filePath) = 0;
+    virtual std::tuple<bool, std::string, std::shared_ptr<FileItem>> AddFile(void* dirMeta, std::string_view filePath) = 0;
     std::unique_ptr<class FileTree> fileTree;
 };
 
