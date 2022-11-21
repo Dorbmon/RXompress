@@ -146,7 +146,6 @@ void RxMainWindow::Init(std::string inputFile, std::shared_ptr<ResourceHandler> 
 void RxMainWindow::refresh() {
     this->refreshFileList();
     this->refreshDirList(nullptr, nullptr);
-    this->refreshFileList();
     // read files of current dir
 }
 

@@ -64,8 +64,12 @@ void RxMainWindow::fileListRemove() {
                 std::cerr << res.second << std::endl;
             } else {
                 //this->compress->
-                this->refDirListModel->erase(node->dirListColumn);
-                this->refFileListModel->erase(node->fileListColumn);
+                if (node->dirListColumn) {
+                    this->refDirListModel->erase(node->dirListColumn);
+                }
+                if (node->fileListColumn) {
+                    this->refFileListModel->erase(node->fileListColumn);
+                }
             }
         }
         //row->get_iter
