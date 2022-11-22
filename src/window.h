@@ -1,7 +1,5 @@
 #include "Type/compress.h"
 #include "gtkmm/box.h"
-#include "gtkmm/listbox.h"
-#include "gtkmm/menubutton.h"
 #include "gtkmm/treestore.h"
 #include "gtkmm/treeview.h"
 #include "resourceHandler.h"

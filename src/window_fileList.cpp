@@ -38,7 +38,7 @@ void RxMainWindow::initFileList() {
     fileListMenuPopup.set_menu_model(gmenu);
     fileListMenuPopup.set_has_arrow(false);
 
-  // Create actions:
+    // Create actions:
     auto refActionGroup = Gio::SimpleActionGroup::create();
 
     refActionGroup->add_action("rename",
@@ -63,7 +63,6 @@ void RxMainWindow::fileListRemove() {
             if (!res.first) {
                 std::cerr << res.second << std::endl;
             } else {
-                //this->compress->
                 if (node->dirListColumn) {
                     this->refDirListModel->erase(node->dirListColumn);
                 }
@@ -91,7 +90,6 @@ void RxMainWindow::fileListRename() {
 }
 bool RxMainWindow::fileListOnDropFile(const Glib::ValueBase& value, double x, double y) {
     if (G_VALUE_HOLDS(value.gobj(), gdk_file_list_get_type())) {
-    // We got the value type that we expected.
         Glib::Value<GdkFileList*> file_list;
         file_list.init(value.gobj());
         GdkFileList* files = file_list.get();
@@ -101,10 +99,6 @@ bool RxMainWindow::fileListOnDropFile(const Glib::ValueBase& value, double x, do
             this->fileListInsertFileOrDir(g_file_get_path(s));
             file = file->next;
         }
-        //file_list.init(value.gobj());
-        //const Glib::ustring dropped_string = ustring_value.get();
-
-        //std::cout << "Received \"" << dropped_string << "\" in button " << std::endl;
         return true;
     }
     return false;

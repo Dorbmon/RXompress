@@ -19,6 +19,7 @@ class Compress {
 private:
     
 public:
+    virtual ~Compress() {}
     Compress();
     virtual std::vector<std::shared_ptr<class FileTreeNode>> GetFiles();    // Get All Files under current folder
     virtual bool ChangeName(void* meta, std::string_view newName)=0;
